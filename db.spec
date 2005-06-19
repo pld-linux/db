@@ -10,7 +10,7 @@ Summary:	Berkeley DB database library for C
 Summary(pl):	Biblioteka C do obs³ugi baz Berkeley DB
 Name:		db
 Version:	4.2.52
-Release:	7
+Release:	8
 License:	Sleepycat public license (GPL-like, see LICENSE)
 Group:		Libraries
 # alternative site (sometimes working): http://www.berkeleydb.com/
@@ -233,9 +233,9 @@ poleceñ.
 
 %build
 cd dist
-cp -f %{_datadir}/aclocal/libtool.m4 aclocal/libtool.ac
-cp -f %{_datadir}/automake/config.sub .
-cp -f %{_datadir}/libtool/ltmain.sh .
+cp -f /usr/share/aclocal/libtool.m4 aclocal/libtool.ac
+cp -f /usr/share/automake/config.sub .
+cp -f /usr/share/libtool/ltmain.sh .
 sh s_config
 cd ..
 
@@ -267,7 +267,7 @@ cd ../build_unix
 
 ../dist/%configure \
 	--prefix=%{_prefix} \
-	--libdir=%{_libdir} \
+	--libdir=/%{_lib} \
 	--enable-compat185 \
 	--enable-rpc \
 	--%{?with_pmutex:en}%{!?with_pmutex:dis}able-posixmutexes \
@@ -285,7 +285,7 @@ cd ../build_unix
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir},%{_bindir}}
+install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir},%{_bindir},%{_prefix}/%{_lib}}
 %if %{with java}
 install -d $RPM_BUILD_ROOT%{_javadir}
 %endif
@@ -299,21 +299,26 @@ install -d $RPM_BUILD_ROOT%{_javadir}
 	DESTDIR=$RPM_BUILD_ROOT \
 	LIB_INSTALL_FILE_LIST=""
 
-cd $RPM_BUILD_ROOT%{_libdir}
-ln -sf libdb-4.2.so libdb.so
-ln -sf libdb-4.2.so libdb4.so
-ln -sf libdb-4.2.so libdb-4.so
-ln -sf libdb-4.2.so libndbm.so
+mv $RPM_BUILD_ROOT/%{_lib}/*.{l,}a $RPM_BUILD_ROOT%{_libdir}/
+mv $RPM_BUILD_ROOT/%{_lib}/libdb_* $RPM_BUILD_ROOT%{_libdir}/
+
+cd $RPM_BUILD_ROOT/%{_libdir}
+ln -sf /%{_lib}/libdb-4.2.so libdb.so
+ln -sf /%{_lib}/libdb-4.2.so libdb4.so
+ln -sf /%{_lib}/libdb-4.2.so libdb-4.so
+ln -sf /%{_lib}/libdb-4.2.so libndbm.so
 ln -sf libdb-4.2.la libdb.la
 ln -sf libdb-4.2.la libdb4.la
 ln -sf libdb-4.2.la libndbm.la
 %if %{with java}
 ln -sf libdb_java-4.2.la libdb_java.la
-mv -f *.jar $RPM_BUILD_ROOT%{_javadir}
+mv -f $RPM_BUILD_ROOT%{_libdir}/*.jar $RPM_BUILD_ROOT%{_javadir}
+sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb_java-4.2.la
 %endif
 %if %{with tcl}
 ln -sf libdb_tcl-4.2.so libdb_tcl.so
 ln -sf libdb_tcl-4.2.la libdb_tcl.la
+sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb_tcl-4.2.la
 %endif
 ln -sf libdb_cxx-4.2.la libdb_cxx.la
 mv -f libdb.a libdb-4.2.a
@@ -327,6 +332,9 @@ ln -sf libdb_cxx-4.2.so libdb_cxx-4.so
 
 sed -i "s/old_library=''/old_library='libdb-4.2.a'/" libdb-4.2.la
 sed -i "s/old_library=''/old_library='libdb_cxx-4.2.a'/" libdb_cxx-4.2.la
+
+sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb-4.2.la
+sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb_cxx-4.2.la
 
 cd -
 rm -f examples_c*/tags
@@ -356,7 +364,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc LICENSE README
-%attr(755,root,root) %{_libdir}/libdb-4.2.so
+%attr(755,root,root) /%{_lib}/libdb-4.2.so
 %dir %{_docdir}/%{name}-%{version}-docs
 %{_docdir}/%{name}-%{version}-docs/sleepycat
 %{_docdir}/%{name}-%{version}-docs/index.html
