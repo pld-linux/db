@@ -10,7 +10,7 @@ Summary:	Berkeley DB database library for C
 Summary(pl):	Biblioteka C do obs³ugi baz Berkeley DB
 Name:		db
 Version:	4.2.52
-Release:	8
+Release:	9
 License:	Sleepycat public license (GPL-like, see LICENSE)
 Group:		Libraries
 # alternative site (sometimes working): http://www.berkeleydb.com/
@@ -299,7 +299,7 @@ install -d $RPM_BUILD_ROOT%{_javadir}
 	DESTDIR=$RPM_BUILD_ROOT \
 	LIB_INSTALL_FILE_LIST=""
 
-mv $RPM_BUILD_ROOT/%{_lib}/*.{l,}a $RPM_BUILD_ROOT%{_libdir}/
+mv $RPM_BUILD_ROOT/%{_lib}/*.la $RPM_BUILD_ROOT%{_libdir}/
 mv $RPM_BUILD_ROOT/%{_lib}/libdb_* $RPM_BUILD_ROOT%{_libdir}/
 
 cd $RPM_BUILD_ROOT/%{_libdir}
