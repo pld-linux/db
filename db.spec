@@ -271,7 +271,7 @@ cd ../build_unix
 
 ../dist/%configure \
 	--prefix=%{_prefix} \
-	--libdir=/%{_lib} \
+	--libdir=%{_libdir} \
 	--enable-compat185 \
 	--enable-rpc \
 	--%{?with_pmutex:en}%{!?with_pmutex:dis}able-posixmutexes \
@@ -289,7 +289,7 @@ cd ../build_unix
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir},%{_bindir},%{_prefix}/%{_lib}}
+install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir},%{_bindir},/%{_lib}}
 %if %{with java}
 install -d $RPM_BUILD_ROOT%{_javadir}
 %endif
@@ -303,10 +303,9 @@ install -d $RPM_BUILD_ROOT%{_javadir}
 	DESTDIR=$RPM_BUILD_ROOT \
 	LIB_INSTALL_FILE_LIST=""
 
-mv $RPM_BUILD_ROOT/%{_lib}/*.la $RPM_BUILD_ROOT%{_libdir}/
-mv $RPM_BUILD_ROOT/%{_lib}/libdb_* $RPM_BUILD_ROOT%{_libdir}/
+mv $RPM_BUILD_ROOT%{_libdir}/libdb-4.2.so $RPM_BUILD_ROOT/%{_lib}
 
-cd $RPM_BUILD_ROOT/%{_libdir}
+cd $RPM_BUILD_ROOT%{_libdir}
 ln -sf /%{_lib}/libdb-4.2.so libdb.so
 ln -sf /%{_lib}/libdb-4.2.so libdb4.so
 ln -sf /%{_lib}/libdb-4.2.so libdb-4.so
@@ -317,12 +316,10 @@ ln -sf libdb-4.2.la libndbm.la
 %if %{with java}
 ln -sf libdb_java-4.2.la libdb_java.la
 mv -f $RPM_BUILD_ROOT%{_libdir}/*.jar $RPM_BUILD_ROOT%{_javadir}
-sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb_java-4.2.la
 %endif
 %if %{with tcl}
 ln -sf libdb_tcl-4.2.so libdb_tcl.so
 ln -sf libdb_tcl-4.2.la libdb_tcl.la
-sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb_tcl-4.2.la
 %endif
 ln -sf libdb_cxx-4.2.la libdb_cxx.la
 mv -f libdb.a libdb-4.2.a
@@ -336,9 +333,6 @@ ln -sf libdb_cxx-4.2.so libdb_cxx-4.so
 
 sed -i "s/old_library=''/old_library='libdb-4.2.a'/" libdb-4.2.la
 sed -i "s/old_library=''/old_library='libdb_cxx-4.2.a'/" libdb_cxx-4.2.la
-
-sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb-4.2.la
-sed -i "s|libdir='/%{_lib}'|libdir='%{_libdir}'|" libdb_cxx-4.2.la
 
 cd -
 rm -f examples_c*/tags
