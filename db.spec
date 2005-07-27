@@ -10,7 +10,7 @@ Summary:	Berkeley DB database library for C
 Summary(pl):	Biblioteka C do obs³ugi baz Berkeley DB
 Name:		db
 Version:	4.2.52
-Release:	10
+Release:	11
 License:	Sleepycat public license (GPL-like, see LICENSE)
 Group:		Libraries
 # alternative site (sometimes working): http://www.berkeleydb.com/
@@ -20,6 +20,9 @@ Source0:	http://www.sleepycat.com/update/snapshot/%{name}-%{version}.tar.gz
 Patch0:		%{name}-so-suffix.patch
 Patch1:		patch.4.2.52.1
 Patch2:		patch.4.2.52.2
+Patch3:		patch.4.2.52.3
+Patch4:		patch.4.2.52.4
+Patch5:		%{name}-amd64-fastmutex.patch
 URL:		http://www.sleepycat.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -230,6 +233,9 @@ poleceñ.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p0
+%patch3 -p0
+%patch4 -p0
+%patch5 -p1
 
 %if %{without nptl}
 sed -i -e 's,AM_PTHREADS_SHARED("POSIX/.*,:,' dist/aclocal/mutex.ac
