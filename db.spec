@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	java	# build db-java (required for openoffice)
+%bcond_with	java	# build db-java
 %bcond_without	tcl	# don't build Tcl bindings
 %bcond_with	pmutex	# use POSIX mutexes (only process-private with linuxthreads)
 %bcond_with	nptl	# use process-shared POSIX mutexes (NPTL provides full interface)
@@ -10,7 +10,7 @@ Summary:	Berkeley DB database library for C
 Summary(pl):	Biblioteka C do obs³ugi baz Berkeley DB
 Name:		db
 Version:	4.2.52
-Release:	11
+Release:	12
 License:	Sleepycat public license (GPL-like, see LICENSE)
 Group:		Libraries
 # alternative site (sometimes working): http://www.berkeleydb.com/
@@ -189,7 +189,6 @@ Biblioteka baz danych Berkeley dla Tcl.
 Summary:	Development files for db-tcl library
 Summary(pl):	Pliki programistyczne biblioteki db-tcl
 Group:		Development/Languages/Tcl
-Requires:	tcl
 Requires:	%{name}-tcl = %{epoch}:%{version}-%{release}
 Conflicts:	db-devel < 4.1.25-3
 
@@ -314,7 +313,7 @@ mv $RPM_BUILD_ROOT%{_libdir}/libdb-4.2.so $RPM_BUILD_ROOT/%{_lib}
 cd $RPM_BUILD_ROOT%{_libdir}
 ln -sf /%{_lib}/libdb-4.2.so libdb.so
 ln -sf /%{_lib}/libdb-4.2.so libdb4.so
-ln -sf /%{_lib}/libdb-4.2.so libdb-4.so
+ln -sf /%{_lib}/libdb-4.2.so libdb-4.2.so
 ln -sf /%{_lib}/libdb-4.2.so libndbm.so
 ln -sf libdb-4.2.la libdb.la
 ln -sf libdb-4.2.la libdb4.la
@@ -335,7 +334,6 @@ ln -sf libdb-4.2.a libndbm.a
 mv -f libdb_cxx.a libdb_cxx-4.2.a
 ln -sf libdb_cxx-4.2.a libdb_cxx.a
 ln -sf libdb_cxx-4.2.so libdb_cxx.so
-ln -sf libdb_cxx-4.2.so libdb_cxx-4.so
 
 sed -i "s/old_library=''/old_library='libdb-4.2.a'/" libdb-4.2.la
 sed -i "s/old_library=''/old_library='libdb_cxx-4.2.a'/" libdb_cxx-4.2.la
@@ -375,14 +373,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libdb-4.2.so
+%attr(755,root,root) %{_libdir}/libdb4.so
+%attr(755,root,root) %{_libdir}/libdb.so
+%attr(755,root,root) %{_libdir}/libndbm.so
 %{_libdir}/libdb-4.2.la
-%{_libdir}/libdb-4.so
-%{_libdir}/libdb.la
-%{_libdir}/libdb.so
 %{_libdir}/libdb4.la
-%{_libdir}/libdb4.so
+%{_libdir}/libdb.la
 %{_libdir}/libndbm.la
-%{_libdir}/libndbm.so
 %{_includedir}/db.h
 %{_includedir}/db_185.h
 %{_docdir}/%{name}-%{version}-docs/api_c
@@ -403,11 +401,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files cxx-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libdb_cxx.so
 %{_includedir}/db_cxx.h
 %{_libdir}/libdb_cxx-4.2.la
-%{_libdir}/libdb_cxx-4.so
 %{_libdir}/libdb_cxx.la
-%{_libdir}/libdb_cxx.so
 %{_docdir}/%{name}-%{version}-docs/api_cxx
 %{_examplesdir}/%{name}-cxx-%{version}
 
@@ -424,9 +421,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files java-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libdb_java.so
 %{_libdir}/libdb_java-4.2.la
 %{_libdir}/libdb_java.la
-%{_libdir}/libdb_java.so
 %{_docdir}/%{name}-%{version}-docs/java
 %{_examplesdir}/%{name}-java-%{version}
 %endif
@@ -438,9 +435,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files tcl-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libdb_tcl.so
 %{_libdir}/libdb_tcl-4.2.la
 %{_libdir}/libdb_tcl.la
-%{_libdir}/libdb_tcl.so
 %{_docdir}/%{name}-%{version}-docs/api_tcl
 %endif
 
