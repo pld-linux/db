@@ -204,8 +204,6 @@ Summary(pl):	Narzêdzia do obs³ugi baz Berkeley DB z linii poleceñ
 Group:		Applications/Databases
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Obsoletes:	db4-utils
-# obsolete Ra package
-Obsoletes:	db3-utils
 
 %description utils
 The Berkeley Database (Berkeley DB) is a programmatic toolkit that
