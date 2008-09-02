@@ -5,32 +5,32 @@
 %bcond_with	pmutex	# use POSIX mutexes (only process-private with linuxthreads)
 %bcond_with	nptl	# use process-shared POSIX mutexes (NPTL provides full interface)
 #
+%define		ver			4.2.52
+%define		patchlevel	5
+#
 %{?with_nptl:%define	with_pmutex	1}
 Summary:	Berkeley DB database library for C
 Summary(pl):	Biblioteka C do obs³ugi baz Berkeley DB
 Name:		db
-Version:	4.2.52
-Release:	12
+Version:	%{ver}.%{patchlevel}
+Release:	1
 License:	Sleepycat public license (GPL-like, see LICENSE)
 Group:		Libraries
 # alternative site (sometimes working): http://www.berkeleydb.com/
 #Source0Download: http://www.sleepycat.com/download/
-Source0:	http://www.sleepycat.com/update/snapshot/%{name}-%{version}.tar.gz
+Source0:	http://www.sleepycat.com/update/snapshot/%{name}-%{ver}.tar.gz
 # Source0-md5:	cbc77517c9278cdb47613ce8cb55779f
+%patchset_source -f http://www.oracle.com/technology/products/berkeley-db/db/update/%{ver}/patch.%{ver}.%g 1 %{patchlevel}
 Patch0:		%{name}-so-suffix.patch
-Patch1:		patch.4.2.52.1
-Patch2:		patch.4.2.52.2
-Patch3:		patch.4.2.52.3
-Patch4:		patch.4.2.52.4
-Patch5:		%{name}-amd64-fastmutex.patch
-URL:		http://www.sleepycat.com/
+Patch1:		%{name}-amd64-fastmutex.patch
+URL:		http://www.oracle.com/technology/software/products/berkeley-db/db/index.html
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	ed
 %{?with_java:BuildRequires:	jdk}
-BuildRequires:	libtool
 BuildRequires:	libstdc++-devel
-BuildRequires:	rpmbuild(macros) >= 1.164
+BuildRequires:	libtool
+BuildRequires:	rpmbuild(macros) >= 1.426
 BuildRequires:	sed >= 4.0
 %{?with_tcl:BuildRequires:	tcl-devel >= 8.4.0}
 Obsoletes:	db4
@@ -203,9 +203,9 @@ Summary:	Command line tools for managing Berkeley DB databases
 Summary(pl):	Narzêdzia do obs³ugi baz Berkeley DB z linii poleceñ
 Group:		Applications/Databases
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Obsoletes:	db3-utils
 Obsoletes:	db4-utils
 # obsolete Ra package
-Obsoletes:	db3-utils
 
 %description utils
 The Berkeley Database (Berkeley DB) is a programmatic toolkit that
@@ -230,13 +230,13 @@ Ten pakiet zawiera narzêdzia do obs³ugi baz Berkeley DB z linii
 poleceñ.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{ver}
+
+# official patches
+%patchset_patch 1 %{patchlevel}
+
 %patch0 -p1
-%patch1 -p0
-%patch2 -p0
-%patch3 -p0
-%patch4 -p0
-%patch5 -p1
+%patch1 -p1
 
 %if %{without nptl}
 sed -i -e 's,AM_PTHREADS_SHARED("POSIX/.*,:,' dist/aclocal/mutex.ac
@@ -287,7 +287,7 @@ cd ../build_unix
 	%{?with_tcl:--with-tcl=/usr/lib} \
 	%{?with_java:--enable-java} \
 	--disable-static \
-	--enable-shared 
+	--enable-shared
 
 %{__make} library_build \
 	TCFLAGS='-I$(builddir) -I%{_includedir}' \
@@ -351,6 +351,8 @@ cp -rf examples_cxx/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-cxx-%{version}
 %if %{with java}
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-java-%{version}
 cp -rf examples_java/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-java-%{version}
+%else
+rm -rf $RPM_BUILD_ROOT%{_docdir}/db-%{version}-docs/java
 %endif
 
 %clean
