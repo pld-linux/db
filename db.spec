@@ -16,10 +16,8 @@ Version:	%{ver}.%{patchlevel}
 Release:	1
 License:	Sleepycat public license (GPL-like, see LICENSE)
 Group:		Libraries
-# alternative site (sometimes working): http://www.berkeleydb.com/
-#Source0Download: http://www.sleepycat.com/download/
-Source0:	http://www.sleepycat.com/update/snapshot/%{name}-%{ver}.tar.gz
-# Source0-md5:	cbc77517c9278cdb47613ce8cb55779f
+Source0:	http://download.oracle.com/berkeley-db/db-%{ver}.tar.gz
+# Source0-md5:	8b5cff6eb83972afdd8e0b821703c33c
 %patchset_source -f http://www.oracle.com/technology/products/berkeley-db/db/update/%{ver}/patch.%{ver}.%g 1 %{patchlevel}
 Patch0:		%{name}-so-suffix.patch
 Patch1:		%{name}-amd64-fastmutex.patch
